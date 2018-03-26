@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>Arduino S-Bus</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<style type="text/css">
+<!--
+body {
+	font: 100% Verdana, Arial, Helvetica, sans-serif;
+	background: #666666;
+	margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0;
+	text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	color: #000000;
+}
+.oneColLiqCtr #container {
+	width: 80%;  /* this will create a container 80% of the browser width */
+	background: #FFFFFF;
+	margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+	border: 1px solid #000000;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+}
+.oneColLiqCtr #mainContent {
+	padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+}
+-->
+</style></head>
+
+<body class="oneColLiqCtr">
+
+<div id="container">
+  <div id="mainContent">
+<center>    
+<h1>Sbus converter using Arduino</h1>
+    <p>&nbsp;</p>
+    <p><img src="Arduino%20S-Bus_pliki/inverter_sbus.jpg"></p>
+    <p>R1 and R2: 1 kOhm, Transistor 2N3904 or similar</p>
+  </center> 
+ The Sbus signal from the FrSky X-receivers are a serial at 100.000 baud, but it is inverted.<br>
+Therefore you will need an inverter like the one above in order for the Arduino to read it correct.<br>
+
+ <p>
+ </p><h4>Arduino sketch</h4>
+   This sketch wil read the Sbus signal and print the first 4 channels, and control the servo on channel 6, that are connected <br>to pin 14 and Arduino.
+   <br>
+   The Sbus is connected to the receiver through the inverter shown above.<br>
+   You will need an USB/Serial converter connected to pin 11 to see the 
+result. This is because the Arduino only have one serial port.<br>
+ <pre>#include&nbsp;&lt;FUTABA_SBUS.h&gt;
+#include&nbsp;&lt;<span style="color: #CC6600;">Servo</span>.h&gt; 
+#include&nbsp;&lt;SoftwareSerial.h&gt;
+
+SoftwareSerial&nbsp;mserial(10,&nbsp;11);&nbsp;<span style="color: #7E7E7E;">// RX, TX</span>
+FUTABA_SBUS&nbsp;sBus;
+<span style="color: #CC6600;">Servo</span> myservo;
+
+<span style="color: #CC6600;">void</span> <span style="color: #CC6600;"><b>setup</b></span>(){
+&nbsp;&nbsp;mserial.<span style="color: #CC6600;">begin</span>(115200);
+&nbsp;&nbsp;sBus.<span style="color: #CC6600;">begin</span>();
+&nbsp;&nbsp;myservo.<span style="color: #CC6600;">attach</span>(14); 
+}
+
+<span style="color: #CC6600;">void</span> <span style="color: #CC6600;"><b>loop</b></span>(){
+&nbsp;&nbsp;<span style="color: #7E7E7E;">//mserial.println("Loop");</span>
+&nbsp;&nbsp;<span style="color: #CC6600;">delay</span>(100);
+&nbsp;&nbsp;sBus.FeedLine();
+&nbsp;&nbsp;<span style="color: #CC6600;">if</span> (sBus.toChannels == 1){
+&nbsp;&nbsp;&nbsp;&nbsp;sBus.UpdateServos();
+&nbsp;&nbsp;&nbsp;&nbsp;sBus.UpdateChannels();
+&nbsp;&nbsp;&nbsp;&nbsp;sBus.toChannels&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;mserial.<span style="color: #CC6600;">print</span>(sBus.channels[1]);
+&nbsp;&nbsp;&nbsp;&nbsp;mserial.<span style="color: #CC6600;">print</span>(<span style="color: #006699;">"\t"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;mserial.<span style="color: #CC6600;">print</span>(sBus.channels[2]);
+&nbsp;&nbsp;&nbsp;&nbsp;mserial.<span style="color: #CC6600;">print</span>(<span style="color: #006699;">"\t"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;mserial.<span style="color: #CC6600;">print</span>(sBus.channels[3]);
+&nbsp;&nbsp;&nbsp;&nbsp;mserial.<span style="color: #CC6600;">print</span>(<span style="color: #006699;">"\t"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;mserial.<span style="color: #CC6600;">println</span>(sBus.channels[4]);
+&nbsp;&nbsp;&nbsp;&nbsp;myservo.<span style="color: #CC6600;">writeMicroseconds</span>(sBus.channels[6]+800);
+&nbsp;&nbsp;}
+}
+
+</pre>
+  
+ 
+<b>Things to consider</b><br>
+FrSky are making a S-Bus to PWM decoder. 
+<br>You can connect 4 servo's and you decide which channels should be used by using a FrSky channel-changer.<br>
+The framerate of the decoded channels are 9 ms, which can be considered a good thing.<br>
+But not all standard analog servos are able to use this high framerate, and therefore some clever devices are needed<br>
+
+See <a href="http://www.rcmf.co.uk/4um/index.php/topic,101234.0.html">RCMF</a> for an example.<br>
+It seems to be much simpler to use the ARduino decoder as it use the good old framerate 20 ms.<br>
+
+<br>
+This picture shows the framerate from the FrSky converter<br><br>
+<img src="Arduino%20S-Bus_pliki/frsky_sbus.png"><p></p>
+
+<p>
+<b>Links</b><br>
+<a href="http://openrcforums.com/forum/viewtopic.php?f=84&amp;t=4539">S-Bus decoder by mstrens</a>
+<br>
+<a href="https://github.com/mikeshub/FUTABA_SBUS">S-Bus library for Arduino</a>
+<br>
+<a href="http://forum.arduino.cc/index.php?PHPSESSID=6fp4qc78i6h3tl5cut6egucos0&amp;topic=99708.0">S-Bus library presented on Arduino forum</a>
+<br>
+<a href="http://www.rcgroups.com/forums/showthread.php?t=2406337">OpenTX on Arduino Mega</a>
+<br>
+<a href="http://www.rcgroups.com/forums/showthread.php?t=2420473">Sbus generator</a>
+<br>
+<a href="http://www.rcgroups.com/forums/showthread.php?t=2245978">S-Port simulator</a>
+<!-- end #mainContent --></p></div>
+<!-- end #container --></div>
+
+
+</body></html>

@@ -1,1 +1,3 @@
 
+#define IBUS_MAXCHANNELS 14
+
