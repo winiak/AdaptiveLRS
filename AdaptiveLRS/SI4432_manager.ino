@@ -19,6 +19,106 @@
 
 unsigned char ItStatus1, ItStatus2;                 //rejestry SI4432 do odczytu 
 
+boolean SI4432_checkRX() {
+  //If it occurs, then it means a packet received or CRC error happened or sync word occured
+  if(nIRQ_LOW)
+  {
+    //read interrupt status registers
+    ItStatus1 = SI4432_spi_read(0x03);            //read the Interrupt Status1 register
+    ItStatus2 = SI4432_spi_read(0x04);            //read the Interrupt Status2 register
+
+    //Sync Word interrupt occured
+    if( (ItStatus2 & 0b10000000) == 0b10000000 )
+    {
+      RX_RSSI = SI4432_spi_read(0x26);
+      Serial.println(RX_RSSI);         
+    }
+  }
+  //CRC Error interrupt occured
+  if( (ItStatus1 & 0x01) == 0x01 )
+    { //reset the RX FIFO
+        //disable the receiver chain
+        SI4432_spi_write(0x07, 0x01);                 //write 0x01 to the Operating Function Control 1 register
+        
+        SI4432_spi_write(0x08, 0x02);           //write 0x02 to the Operating Function Control 2 register
+        SI4432_spi_write(0x08, 0x00);           //write 0x00 to the Operating Function Control 2 register
+        Serial.println(F("CRCerr"));
+        SI4432_to_RX_mode();
+        return false;
+    }
+    else 
+    {
+      //packet received interrupt occured  
+      if( (ItStatus1 & 0x02) == 0x02 )
+      {
+        //disable the receiver chain
+        SI4432_spi_write(0x07, 0x01);                 //write 0x01 to the Operating Function Control 1 register
+        
+        SI4432_receive_data();
+
+        SI4432_to_RX_mode();
+        return true;  
+      }
+      return false;
+    }
+            
+}
+
+/**
+ * Receive data (first check if available)
+ */
+void SI4432_receive_data()
+{
+
+    //Read the length of the received payload
+    uint8_t message_length = SI4432_spi_read(0x4B);       //read the Received Packet Length register
+    //??? check whether the received payload is not longer than the allocated buffer in the MCU
+
+    //Serial.print("RX RML: "); Serial.print(message_length); Serial.print(" .. ");
+    //Serial.println(TX_RSSI);
+    
+    nSEL_LOW;
+
+        Write8bitcommand(0x7f);                 //komenda czytamy ...
+        
+        //====================================
+        if (message_length == 16)                           //czyli info o serwach
+          {
+            Serial.println("S");
+            for (char i = 0; i < 16; i++)
+              {
+                RF_Servo_message[i] = read_8bit_data();
+              }   
+        
+            for (char i = 0; i < 8; i++)                       //RC_CHANNEL_COUNT; i++)
+              {
+                unsigned int temp_int = (256 * RF_Servo_message[(2 * i)]) + RF_Servo_message[1 + (2 * i)];
+      
+                //if ((temp_int > 1500) && (temp_int < 5000))
+                //    {
+                        Servos[i] = temp_int ;
+                        //Serial.print(F("/")); Serial.print(temp_int); 
+                //    }
+              }
+            //Serial.println();
+            
+          }
+
+        //====================================
+        if (message_length == 18)                           //czyli info Telemetry_bridge
+          {
+            Serial.println("BbbbbbbbbbbbbbbB");         //PODCZAS TESTOWANIA!!!
+            for (char i = 0; i < 18; i++)
+              {
+                RF_Bridge_message[i] = read_8bit_data();
+              }   
+        
+          }
+
+
+    nSEL_HIGH;
+}
+
 /**
  * Transmit data
  */
@@ -163,7 +263,7 @@ void radio_init(void)
     SI4432_spi_write(0x0d, 0xff);                   //GPIO Configuration 2, 
     SI4432_spi_write(0x0e, 0x00);                   //I/O Port Configuration  
 
-    set_data_rate_low();
+    set_data_rate_high();
 
     SI4432_spi_write(0x30, 0x8c);                   // enable packet handler, msb first, enable crc,
     SI4432_spi_write(0x32, 0x0f);                   // no broadcast, check header bytes 3,2,1,0             

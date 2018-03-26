@@ -45,7 +45,7 @@ void setup() {
   Config_ICP1_PPM();
   #endif;
 
-  set_data_rate_low();
+  //set_data_rate_low();
 }
 
 void loop() {
@@ -65,17 +65,39 @@ void loop() {
     timer_start = micros();
 
     // Servos messsage - 16 chars
+    /*
     for (byte i = 0; i < 8; i++)
     {
       TX_Buffer[(i * 2)] = Servo_Buffer[i] / 256;
       TX_Buffer[(i * 2) + 1] = Servo_Buffer[i] % 256;
     }
     SI4432_TX(16);
-    
+    */
+    if (Serial.available() >= 10 ) {
+      char n=Serial.available();
+      for (char i = 0; i<n; i++)
+        TX_Buffer[i] = Serial.read();
+      SI4432_TX(16);
+      Serial.print("---->");  
+    }
     timer_stop = micros();
     #ifdef DEBUG
       Serial.print(timer_stop - timer_start); Serial.println("us");
     #endif
   }
+
+  /*
+        //LED_feadback_8_HIGH;        
+         last_message_time = micros();    //za XX ms powinno nastąpić kolejne odebranie danych
+        failsafe_mode = 0;
+        forced_hopping_counter = 0;
+        //not_recived_frames = 0;
+        forced_hopping_time = 41500;
+
+        LED_feadback_8_LOW;
+        Telemetry_Bridge_Write();
+        Hopping();
+   * /
+   */
 }
 
