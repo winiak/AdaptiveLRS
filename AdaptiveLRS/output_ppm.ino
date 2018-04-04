@@ -1,4 +1,6 @@
-
+/*
+ * Following code is based on OpenLRS project developed by Melih Karakelle on 2010-2011
+ */
 #ifdef RX_module && PPM_module
 
 //volatile unsigned char current_Servo = 0;
