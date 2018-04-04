@@ -28,3 +28,18 @@ void Send_Bridge_message()
 
 }
 
+void servoTester() {
+  static unsigned int swipeval = 2000;
+  static char sign = 1;
+  static unsigned int sstep = 20;
+  
+  if (swipeval <= 2000)
+    sign = 1;
+  if (swipeval >= 4000)
+    sign = -1;
+  swipeval = swipeval + sstep * sign;
+
+  for (char i=0; i<8; i++)
+    Servos[i] = (i != 2 ? swipeval : Servos[i]);
+}
+

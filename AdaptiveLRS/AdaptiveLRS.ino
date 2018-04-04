@@ -24,7 +24,7 @@
   uint8_t TX_RSSI = 0;
 
   unsigned long TX_period = 40000;  //us
-  unsigned long ibus_frame_time = 7700; //us
+  unsigned long ibus_frame_period = 7700; //us
   unsigned long timer_start, timer_stop;
   
   // temporary variables
@@ -39,26 +39,46 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Transciever starting...");
   wdt_enable(WDTO_250MS);  
-  radio_init();
+  //radio_init();
 
+  setup_module();
+  
   #ifdef RX_module
-  Config_ICP1_PPM();
+    #ifdef PPM_module
+      INIT_SERVO_DRIVER();
+    #endif //PPM_module
+  #endif //RX_module
+  
+  #ifdef TX_module
+    Config_ICP1_PPM();
   #endif;
-
   //set_data_rate_low();
 }
 
 void loop() {
   static unsigned long transmit_time = 0;
+  static unsigned long ibus_frame_time = 0;
   wdt_reset();
 
-  // send ibus every 7,7ms
-  #ifdef RX_module
-  if (micros() > ibus_frame_time) {
-    
-  }
-  #endif
   
+  #ifdef RX_module
+    #ifdef IBUS_module
+    // send ibus every 7,7ms
+    if (micros() > ibus_frame_time) {
+      ibus_frame_time = micros() + ibus_frame_period;
+      
+    }
+    #endif //ibus_module
+    
+    #ifdef servo_tester_module
+      if (micros() > transmit_time) {
+        transmit_time = micros() + TX_period;
+        servoTester();
+      }
+    #endif  //servo_tester_module
+  #endif  //RX_module
+
+  #ifdef TX_module
   // transmit every 10..20..40ms
   if (micros() > transmit_time) {
     transmit_time = micros() + TX_period;
@@ -85,6 +105,7 @@ void loop() {
       Serial.print(timer_stop - timer_start); Serial.println("us");
     #endif
   }
+  #endif  // TX_module
 
   /*
         //LED_feadback_8_HIGH;        

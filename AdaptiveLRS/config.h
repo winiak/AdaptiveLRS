@@ -29,10 +29,16 @@
 
 // Debug mode
 #define DEBUG
+#define servo_tester_module
 
 // Transmitter or Receiver
-#define TX_module
- //#define RX_module
+//#define TX_module
+#define RX_module
+
+// Receiver type
+#define PPM_module
+//#define IBUS_module
+//#define FRSKY_module
 
 // HW configuration
 #define radio_SI4432
@@ -53,17 +59,20 @@ uint8_t hopping_channel = 0;
 
 // Servos & channels
 #define PPM_CHANS 8
-volatile unsigned int Servo_Buffer[9] = {3000,3000,1900,3000,3000,3000,3000,3000,3000};
-unsigned int Servos[8] = {2000, 2200, 2400, 2600, 2800, 3000, 3300, 3400};  
-#define PPM_OUT 8
-#define Servo1_OUT NULL
-#define Servo2_OUT NULL
-#define Servo3_OUT NULL
-#define Servo4_OUT NULL
-#define Servo5_OUT NULL
-#define Servo6_OUT NULL
-#define Servo7_OUT NULL
-#define Servo8_OUT NULL
+volatile unsigned int Servo_Buffer[8] = {2500,3000,2000,3000,3000,3000,3000,3000};
+unsigned int Servos[8] = {2000, 2300, 2600, 2900, 3200, 3500, 3800, 4000};  
+
+  #define SERVO_SHIFT (-16)
+
+// PPM 
+  #define PPM_OUT 8   
+  #define PPM_OUT_HIGH PORTB |= _BV(0)
+  #define PPM_OUT_LOW PORTB &= ~_BV(0)
+
+// PWM
+//#define Servo1_OUT pinMode(_pin_, OUTPUT);
+//#define Servo1_OUT_HIGH PORT_ |= _BV(?)
+//#define Servos_LOW PORTB &= 0x00; PORTD &= 0x1F; // pulling down the servo outputs
 
 #if(HW_config == 1)
   #define SDO_pin           A0
