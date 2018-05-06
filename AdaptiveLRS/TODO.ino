@@ -1,7 +1,12 @@
 /*
  * This is TODO file. List of further tasks / features to be implemented:
  * - reading ppm signal, check with "output_ppm" and with any receiver
- * - generating ibus frame, check with FC
+ * - time display function - send to serial time from last call of this function
+ * 
+ * ONGOING 
+ *    + generating ibus frame, 
+ *    - check if frame is correct (debug)
+ *    - check with FC
  * - generating sbus frame, check with FC
  * - setup basic communication between modules - set RX to respond with Echo
  * - build communication frame (TYPE, LENGTH, DATA)

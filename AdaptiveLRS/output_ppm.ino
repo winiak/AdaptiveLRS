@@ -1,7 +1,8 @@
 /*
  * Following code is based on OpenLRS project developed by Melih Karakelle on 2010-2011
  */
-#ifdef RX_module && PPM_module
+#ifdef RX_module 
+#ifdef PPM_module
 
 //volatile unsigned char current_Servo = 0;
 //volatile unsigned int total_ppm_time=0;
@@ -10,6 +11,7 @@ unsigned int total_ppm_time = 0;
 
 void setup_module() {
   pinMode(PPM_OUT, OUTPUT);
+  INIT_SERVO_DRIVER();
 }
 
 //=============================================================
@@ -38,20 +40,20 @@ ISR(TIMER1_OVF_vect)
   PPM_OUT_LOW;
 
   Servo_Number++; // jump to next servo
-  if (Servo_Number>8) // back to the first servo 
+  if (Servo_Number > SERVO_CHANNELS) // back to the first servo 
     {
     total_ppm_time = 0; // clear the total servo ppm time
     Servo_Number=0;
     }
  
 
-  if (Servo_Number == 8)  // Check the servo number. 
+  if (Servo_Number == SERVO_CHANNELS)  // Check the servo number. 
       {
         //Servos accepting 50hz ppm signal, this is why we are waiting for 20ms before second signal brust. 
         us = 40000 - total_ppm_time; //wait for total 20ms loop.  waiting time = 20.000us - total servo times
       }
       else
-        us = Servos[Servo_Number]+SERVO_SHIFT; // read the servo timing from buffer
+        us = Servos[Servo_Number] + SERVO_SHIFT; // read the servo timing from buffer
   
   total_ppm_time += us; // calculate total servo signal times.
 
@@ -89,4 +91,4 @@ ISR(TIMER1_OVF_vect)
 }
 
 #endif //(RX_module && PPM_module)
-
+#endif //RX_module

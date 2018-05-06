@@ -36,8 +36,8 @@
 #define RX_module
 
 // Receiver type
-#define PPM_module
-//#define IBUS_module
+//#define PPM_module
+#define IBUS_module
 //#define FRSKY_module
 
 // HW configuration
@@ -58,11 +58,11 @@ uint8_t hopping_channel = 0;
 //{10,9,8}; //{1,142,3,140,7,138,11,136,67,111}; 
 
 // Servos & channels
-#define PPM_CHANS 8
-volatile unsigned int Servo_Buffer[8] = {2500,3000,2000,3000,3000,3000,3000,3000};
-unsigned int Servos[8] = {2000, 2300, 2600, 2900, 3200, 3500, 3800, 4000};  
+#define SERVO_CHANNELS 8
+volatile unsigned int Servo_Buffer[SERVO_CHANNELS] = {2500,3000,2000,3000,3000,3000,3000,3000};
+unsigned int Servos[SERVO_CHANNELS] = {2000, 2300, 2600, 2900, 3200, 3500, 3800, 4000};  
 
-  #define SERVO_SHIFT (-16)
+  #define SERVO_SHIFT (-16)   // PPM = -16  |  others = 0
 
 // PPM 
   #define PPM_OUT 8   
@@ -73,6 +73,10 @@ unsigned int Servos[8] = {2000, 2300, 2600, 2900, 3200, 3500, 3800, 4000};
 //#define Servo1_OUT pinMode(_pin_, OUTPUT);
 //#define Servo1_OUT_HIGH PORT_ |= _BV(?)
 //#define Servos_LOW PORTB &= 0x00; PORTD &= 0x1F; // pulling down the servo outputs
+
+// IBUS
+#define IBUS_TX_PIN 8
+#define IBUS_RX_PIN 9  // Acceptable pins for RX: 8, 9, 10, 11, 14 (MISO), 15 (SCK), 16 (MOSI)
 
 #if(HW_config == 1)
   #define SDO_pin           A0

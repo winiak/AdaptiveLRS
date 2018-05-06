@@ -45,7 +45,7 @@ void setup() {
   
   #ifdef RX_module
     #ifdef PPM_module
-      INIT_SERVO_DRIVER();
+      //
     #endif //PPM_module
   #endif //RX_module
   
@@ -66,7 +66,7 @@ void loop() {
     // send ibus every 7,7ms
     if (micros() > ibus_frame_time) {
       ibus_frame_time = micros() + ibus_frame_period;
-      
+      send_frame();
     }
     #endif //ibus_module
     
