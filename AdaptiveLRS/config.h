@@ -28,7 +28,7 @@
  */
 
 // Debug mode
-#define DEBUG
+//#define DEBUG
 #define servo_tester_module
 
 // Transmitter or Receiver

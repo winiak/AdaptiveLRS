@@ -67,6 +67,8 @@ void loop() {
     if (micros() > ibus_frame_time) {
       ibus_frame_time = micros() + ibus_frame_period;
       send_frame();
+      timer_stop = micros();
+      //timer_start = micros(); Serial.print(timer_stop - timer_start); Serial.println("us");
     }
     #endif //ibus_module
     

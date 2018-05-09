@@ -34,6 +34,7 @@
 
 SoftwareSerial mySerial(IBUS_RX_PIN, IBUS_TX_PIN); // RX, TX
 void setup_module() {
+  pinMode(IBUS_TX_PIN, OUTPUT);
   // serial setup
   mySerial.begin(115200);
 }
@@ -57,20 +58,29 @@ void send_frame() {
 
   //
   for (byte i = 0; i < IBUS_MAXCHANNELS; i++) {
-    temp_servo = (Servo_Buffer[i] + SERVO_SHIFT) / 2;   // add shift (config) and make compatible (divide by 2)
-    frame_buffer[(i * 2) + 2] =  (i < SERVO_CHANNELS ? temp_servo / 256 : 0xDC);  // set 1500 for unused channels
+    temp_servo = (Servos[i] + SERVO_SHIFT) / 2;   // add shift (config) and make compatible (divide by 2)
+    frame_buffer[(i * 2) + 2] =  (i < SERVO_CHANNELS ? temp_servo % 256 : 0xDC);  // set 1500 for unused channels
     chksum -= frame_buffer[(i * 2) + 2];
-    frame_buffer[(i * 2) + 3] = (i < SERVO_CHANNELS ? temp_servo % 256 : 0x05);
+    frame_buffer[(i * 2) + 3] = (i < SERVO_CHANNELS ? temp_servo / 256 : 0x05);
     chksum -= frame_buffer[(i * 2) + 3];
   }
 
-  frame_buffer[30] = chksum / 256;
-  frame_buffer[31] = chksum % 256;
+  frame_buffer[30] = chksum % 256;
+  frame_buffer[31] = chksum / 256;
 
   mySerial.write(frame_buffer);
   
   #ifdef DEBUG
     PrintHex8(frame_buffer, 32);
+    Serial.println();
+    /*
+    for (byte i = 0; i < 8; i++)
+    {
+      Serial.print((Servos[i] + SERVO_SHIFT) / 2);
+      Serial.print(" ");
+    }
+    Serial.println();
+    */
   #endif // DEBUG
 }
 
