@@ -3,6 +3,7 @@
  * - why iBus? Latency! Frame sent to FC every 7ms!
  * - 14 channels by default !!
  * - support bi-directional communication (just in case)
+ * - consumes UART, SoftSerial does not work at 115200 :(
  * 
  * Frame example:
  * x20x40   = Header (length of 32 bytes + command)
@@ -32,48 +33,44 @@
 #define IBUS_MAXCHANNELS 14
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(IBUS_RX_PIN, IBUS_TX_PIN); // RX, TX
+//SoftwareSerial mySerial(IBUS_RX_PIN, IBUS_TX_PIN); // RX, TX
 void setup_module() {
-  pinMode(IBUS_TX_PIN, OUTPUT);
-  // serial setup
-  mySerial.begin(115200);
+    // module works on hardware serial - must be 115200
 }
 
-//  if (mySerial.available()) {
-//    Serial.write(mySerial.read());
-//  }
-//
-//if (Serial.available()) {
-//    mySerial.write(Serial.read());
-//  }
   
 void send_frame() {
   char frame_buffer[32];
   char ptr, len;
-  unsigned int chksum = 0xFFFF - 0x20 - 0x40;
-  unsigned int temp_servo;
+  unsigned int chksum = 65535 - 32 - 64; //; // - 0x20  - 0x40; // 0x0000  - 0x20 - 0x40;
+  unsigned int temp_servo, temp;
 
   frame_buffer[0] = 0x20;   // frame length = 32 bytes 
   frame_buffer[1] = 0x40;   // command - servo data
 
-  //
+  // Build frame
   for (byte i = 0; i < IBUS_MAXCHANNELS; i++) {
-    temp_servo = (Servos[i] + SERVO_SHIFT) / 2;   // add shift (config) and make compatible (divide by 2)
-    frame_buffer[(i * 2) + 2] =  (i < SERVO_CHANNELS ? temp_servo % 256 : 0xDC);  // set 1500 for unused channels
-    chksum -= frame_buffer[(i * 2) + 2];
-    frame_buffer[(i * 2) + 3] = (i < SERVO_CHANNELS ? temp_servo / 256 : 0x05);
-    chksum -= frame_buffer[(i * 2) + 3];
+    temp_servo = (i < SERVO_CHANNELS ? (Servos[i] + SERVO_SHIFT)/2 : 1500);   // add shift (config) and make compatible (divide by 2)
+    frame_buffer[(i * 2) + 2] =  temp_servo % 256;    
+    chksum -= (temp_servo % 256);
+    frame_buffer[(i * 2) + 3] =  temp_servo / 256;
+    chksum -= (temp_servo / 256);
   }
 
+  // Add CRC to frame
   frame_buffer[30] = chksum % 256;
   frame_buffer[31] = chksum / 256;
 
-  mySerial.write(frame_buffer);
+  // Send to serial (soft serial does not works at 115200
+  Serial.write(frame_buffer);
+ 
   
   #ifdef DEBUG
+    // Show all data in ASCII 
     PrintHex8(frame_buffer, 32);
     Serial.println();
-    /*
+  
+  /*
     for (byte i = 0; i < 8; i++)
     {
       Serial.print((Servos[i] + SERVO_SHIFT) / 2);

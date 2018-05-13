@@ -59,10 +59,10 @@ uint8_t hopping_channel = 0;
 
 // Servos & channels
 #define SERVO_CHANNELS 8
-volatile unsigned int Servo_Buffer[SERVO_CHANNELS] = {2500,3000,2000,3000,3000,3000,3000,3000};
+volatile unsigned int Servo_Buffer[SERVO_CHANNELS] = {2962, 2996, 2026, 3002, 2298, 2000, 3000, 3000};
 unsigned int Servos[SERVO_CHANNELS] = {2000, 2300, 2600, 2900, 3200, 3500, 3800, 4000};  
 
-  #define SERVO_SHIFT (-16)   // PPM = -16  |  others = 0
+  #define SERVO_SHIFT 0   //(-16)   // PPM = -16  |  others = 0
 
 // PPM 
   #define PPM_OUT 8   

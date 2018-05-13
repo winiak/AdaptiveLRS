@@ -2,17 +2,15 @@
  * This is TODO file. List of further tasks / features to be implemented:
  * - reading ppm signal, check with "output_ppm" and with any receiver
  * - time display function - send to serial time from last call of this function
- * 
- * ONGOING 
- *    + generating ibus frame, 
- *    - check if frame is correct (debug)
- *    - check with FC
- * - generating sbus frame, check with FC
  * - setup basic communication between modules - set RX to respond with Echo
+ * - read iBus frame from receiver
+ * + generating ibus frame, 
+ *    + check if frame is correct (debug)
+ *    + check with FC
  * - build communication frame (TYPE, LENGTH, DATA)
  * - send non-servo data when available (on request) but not more often that every second servo frame
  * - hopping!
- * - failsafe (servo values out of range / no PPM)
+ * - failsafe (servo values out of range / no PPM / ibus stopped)
  * - change TX power on request - test
  * - change TX power based on RSSI
  * - change communication speed on request - test
@@ -25,4 +23,8 @@
  *    - transmit frame from the one with better RSSI
  *    ALTERNATIVE
  *    - use Hopping to switch between RX modules (every second channel)
- */
+ * - generating sbus frame, check with FC
+ * - generating fport frame, check with FC
+ * - read sbus frame
+ * - read fport frame
+*/
