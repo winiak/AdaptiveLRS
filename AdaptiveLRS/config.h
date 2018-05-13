@@ -32,8 +32,8 @@
 #define servo_tester_module
 
 // Transmitter or Receiver
-//#define TX_module
-#define RX_module
+#define TX_module
+//#define RX_module
 
 // Receiver type
 //#define PPM_module
@@ -75,8 +75,7 @@ unsigned int Servos[SERVO_CHANNELS] = {2000, 2300, 2600, 2900, 3200, 3500, 3800,
 //#define Servos_LOW PORTB &= 0x00; PORTD &= 0x1F; // pulling down the servo outputs
 
 // IBUS
-#define IBUS_TX_PIN 8
-#define IBUS_RX_PIN 9  // Acceptable pins for RX: 8, 9, 10, 11, 14 (MISO), 15 (SCK), 16 (MOSI)
+#define IBUS_TIMEOUT  100
 
 #if(HW_config == 1)
   #define SDO_pin           A0

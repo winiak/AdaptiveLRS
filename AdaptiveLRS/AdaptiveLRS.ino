@@ -50,7 +50,9 @@ void setup() {
   #endif //RX_module
   
   #ifdef TX_module
-    Config_ICP1_PPM();
+    #ifdef PPM_module
+      Config_ICP1_PPM();
+    #endif //PPM_module
   #endif;
   //set_data_rate_low();
 }
@@ -80,7 +82,10 @@ void loop() {
     #endif  //servo_tester_module
   #endif  //RX_module
 
-  #ifdef TX_module
+  #ifdef TX_module  
+    #ifdef IBUS_module
+    read_frame();
+    #endif //ibus_module
   // transmit every 10..20..40ms
   if (micros() > transmit_time) {
     transmit_time = micros() + TX_period;
@@ -88,13 +93,14 @@ void loop() {
 
     // Servos messsage - 16 chars
     /*
-    for (byte i = 0; i < 8; i++)
+    for (byte i = 0; i < SERVO_CHANNELS; i++)
     {
       TX_Buffer[(i * 2)] = Servo_Buffer[i] / 256;
       TX_Buffer[(i * 2) + 1] = Servo_Buffer[i] % 256;
     }
     SI4432_TX(16);
     */
+    /*
     if (Serial.available() >= 10 ) {
       char n=Serial.available();
       for (char i = 0; i<n; i++)
@@ -102,6 +108,7 @@ void loop() {
       SI4432_TX(16);
       Serial.print("---->");  
     }
+    */
     timer_stop = micros();
     #ifdef DEBUG
       Serial.print(timer_stop - timer_start); Serial.println("us");

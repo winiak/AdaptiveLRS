@@ -3,7 +3,8 @@
  * - reading ppm signal, check with "output_ppm" and with any receiver
  * - time display function - send to serial time from last call of this function
  * - setup basic communication between modules - set RX to respond with Echo
- * - read iBus frame from receiver
+ * + read iBus frame from receiver
+ *    - addreaction on lack of incomming signal (nothing on serial or checksum)
  * + generating ibus frame, 
  *    + check if frame is correct (debug)
  *    + check with FC

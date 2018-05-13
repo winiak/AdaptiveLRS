@@ -31,13 +31,10 @@
 
 
 #define IBUS_MAXCHANNELS 14
-#include <SoftwareSerial.h>
 
-//SoftwareSerial mySerial(IBUS_RX_PIN, IBUS_TX_PIN); // RX, TX
 void setup_module() {
     // module works on hardware serial - must be 115200
 }
-
   
 void send_frame() {
   char frame_buffer[32];
@@ -79,10 +76,6 @@ void send_frame() {
     Serial.println();
     */
   #endif // DEBUG
-}
-
-void read_frame() {
-  
 }
 
 #endif //IBUS_module
