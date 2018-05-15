@@ -5,6 +5,7 @@
  * - setup basic communication between modules - set RX to respond with Echo
  * + read iBus frame from receiver
  *    - addreaction on lack of incomming signal (nothing on serial or checksum)
+ *    - check min and max ibus frame rate on FC input - can it be synchronized with data transmission speed? Verify 7 / 20 / 40ms
  * + generating ibus frame, 
  *    + check if frame is correct (debug)
  *    + check with FC

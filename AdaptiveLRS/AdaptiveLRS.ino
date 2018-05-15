@@ -23,8 +23,8 @@
   uint8_t RX_RSSI = 0;
   uint8_t TX_RSSI = 0;
 
-  unsigned long TX_period = 40000;  //us
-  unsigned long ibus_frame_period = 7700; //us
+  unsigned long TX_period = 7000;  // 7700 / 20000 / 40000  us
+  unsigned long ibus_frame_period = 7000; //us
   unsigned long timer_start, timer_stop;
   
   // temporary variables
@@ -39,7 +39,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Transciever starting...");
   wdt_enable(WDTO_250MS);  
-  //radio_init();
+  radio_init();
 
   setup_module();
   
@@ -51,7 +51,7 @@ void setup() {
   
   #ifdef TX_module
     #ifdef PPM_module
-      Config_ICP1_PPM();
+
     #endif //PPM_module
   #endif;
   //set_data_rate_low();
@@ -60,9 +60,15 @@ void setup() {
 void loop() {
   static unsigned long transmit_time = 0;
   static unsigned long ibus_frame_time = 0;
+  char i;
   wdt_reset();
 
-  
+  /**
+   * RX module
+   * - iBus frame tackle
+   * - Servo tester
+   * - PPM generation is done by TIMER interruption called by setup_module();
+   */
   #ifdef RX_module
     #ifdef IBUS_module
     // send ibus every 7,7ms
@@ -82,38 +88,58 @@ void loop() {
     #endif  //servo_tester_module
   #endif  //RX_module
 
+  /**
+   * TX module
+   * - iBus module frame read
+   */
   #ifdef TX_module  
+
     #ifdef IBUS_module
     read_frame();
+    if (iBus_failed())
+      for (i = 0; i < SERVO_CHANNELS; i++)
+        Servos[i] = Servo_Failsafe[i];
     #endif //ibus_module
-  // transmit every 10..20..40ms
+    
+    #ifdef PPM_module
+    if (check_PPM_corrupted())
+      for (i = 0; i < SERVO_CHANNELS; i++)
+        Servos[i] = Servo_Failsafe[i];
+    else
+      for (i = 0; i < SERVO_CHANNELS; i++)
+        Servos[i] = Servo_Buffer[i];
+    #endif //ppm_module
+
+
+  // transmit every 10..20..40ms  -> let's try 7 (iBus only) / 20 / 40
   if (micros() > transmit_time) {
     transmit_time = micros() + TX_period;
     timer_start = micros();
 
-    // Servos messsage - 16 chars
-    /*
-    for (byte i = 0; i < SERVO_CHANNELS; i++)
-    {
-      TX_Buffer[(i * 2)] = Servo_Buffer[i] / 256;
-      TX_Buffer[(i * 2) + 1] = Servo_Buffer[i] % 256;
-    }
-    SI4432_TX(16);
-    */
-    /*
-    if (Serial.available() >= 10 ) {
-      char n=Serial.available();
-      for (char i = 0; i<n; i++)
-        TX_Buffer[i] = Serial.read();
-      SI4432_TX(16);
-      Serial.print("---->");  
-    }
-    */
+    // Hopping
+    Hopping();
+    
+    // Prepare and sent TX control packet
+    Send_Servo_message();
+    
+ 
     timer_stop = micros();
     #ifdef DEBUG
       Serial.print(timer_stop - timer_start); Serial.println("us");
     #endif
-  }
+ }
+ 
+  
+  // Wait for RX to respond
+  SI4432_checkRX();
+  //Serial.println(RF_Servo_message);
+  
+  // Get RSSI
+  // Serial.println(RX_RSSI);
+  
+
+
+   
   #endif  // TX_module
 
   /*

@@ -6,8 +6,8 @@ void Send_Servo_message()
         
     for (byte i = 0; i < 8; i++)
       {
-        TX_Buffer[(i * 2)] = Servo_Buffer[i] / 256;
-        TX_Buffer[(i * 2) + 1] = Servo_Buffer[i] % 256;
+        TX_Buffer[(i * 2)] = Servos[i] / 256;
+        TX_Buffer[(i * 2) + 1] = Servos[i] % 256;
       }
             
     SI4432_TX(16);           //nadaj 16 bytów z bufora

@@ -13,6 +13,10 @@ static bool no_tx_status_changed = false;
 //SERVO_CHANNELS
 //Servos[Servo_Number]
 
+bool iBus_failed() {
+  return no_tx_status_changed;  
+}
+
 void setup_module() {
     // module works on hardware serial - must be 115200
 }
@@ -58,10 +62,10 @@ void read_frame() {
       {
         // MODIFY IF MORE CHANNELS NEEDED
         for (i = 1; i <= SERVO_CHANNELS; i++)
-          Servos[i-1] = (ibus[ i*2+1] << 8) + ibus[ i*2];
-        //#ifdef DEBUG
+          Servos[i-1] = ((ibus[ i*2+1] << 8) + ibus[ i*2]) * 2; // get two bytes together and multiply by 2 in order to make compliant with LRS "standard" == PPM read
+          #ifdef DEBUG
           Serial.print(millis() - last_frame_timer); Serial.println("ms");
-        //#endif       
+          #endif       
         last_frame_timer = millis();
         no_tx_status_changed = false;
       } else {

@@ -35,9 +35,9 @@
 #define TX_module
 //#define RX_module
 
-// Receiver type
-//#define PPM_module
-#define IBUS_module
+// Communication type
+#define PPM_module  // using ICP for TX or declared for TX
+//#define IBUS_module   // using UART
 //#define FRSKY_module
 
 // HW configuration
@@ -45,7 +45,7 @@
 #define HW_config 1
 
 // Output type (select one)
-#define Output_PPM
+//#define Output_PPM
 //#define Output_ibus
  
 // Communication parameters
@@ -59,8 +59,9 @@ uint8_t hopping_channel = 0;
 
 // Servos & channels
 #define SERVO_CHANNELS 8
-volatile unsigned int Servo_Buffer[SERVO_CHANNELS] = {2962, 2996, 2026, 3002, 2298, 2000, 3000, 3000};
-unsigned int Servos[SERVO_CHANNELS] = {2000, 2300, 2600, 2900, 3200, 3500, 3800, 4000};  
+volatile unsigned int Servo_Buffer[SERVO_CHANNELS] = {3000, 3000, 2000, 3000, 3000, 3000, 3000, 3000};
+unsigned int Servos[SERVO_CHANNELS] = {3000, 3000, 2000, 3000, 3000, 3000, 3000, 3000};  
+unsigned int Servo_Failsafe[SERVO_CHANNELS] = {3000, 3000, 1800, 3000, 3000, 3000, 3000, 3000};
 
   #define SERVO_SHIFT 0   //(-16)   // PPM = -16  |  others = 0
 
@@ -68,6 +69,7 @@ unsigned int Servos[SERVO_CHANNELS] = {2000, 2300, 2600, 2900, 3200, 3500, 3800,
   #define PPM_OUT 8   
   #define PPM_OUT_HIGH PORTB |= _BV(0)
   #define PPM_OUT_LOW PORTB &= ~_BV(0)
+  #define PPM_IN  8 // ICP1
 
 // PWM
 //#define Servo1_OUT pinMode(_pin_, OUTPUT);

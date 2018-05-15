@@ -43,7 +43,7 @@ ISR(TIMER1_OVF_vect)
   if (Servo_Number > SERVO_CHANNELS) // back to the first servo 
     {
     total_ppm_time = 0; // clear the total servo ppm time
-    Servo_Number=0;
+    Servo_Number = 0;
     }
  
 

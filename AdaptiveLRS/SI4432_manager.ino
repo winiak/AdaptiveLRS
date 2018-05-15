@@ -31,7 +31,9 @@ boolean SI4432_checkRX() {
     if( (ItStatus2 & 0b10000000) == 0b10000000 )
     {
       RX_RSSI = SI4432_spi_read(0x26);
+      #ifdef DEBUG
       Serial.println(RX_RSSI);         
+      #endif
     }
   }
   //CRC Error interrupt occured
@@ -70,17 +72,24 @@ boolean SI4432_checkRX() {
 void SI4432_receive_data()
 {
 
-    //Read the length of the received payload
-    uint8_t message_length = SI4432_spi_read(0x4B);       //read the Received Packet Length register
-    //??? check whether the received payload is not longer than the allocated buffer in the MCU
+  //Read the length of the received payload
+  uint8_t message_length = SI4432_spi_read(0x4B);       //read the Received Packet Length register
+  //??? check whether the received payload is not longer than the allocated buffer in the MCU
 
-    //Serial.print("RX RML: "); Serial.print(message_length); Serial.print(" .. ");
-    //Serial.println(TX_RSSI);
+  if (message_length > 0) {
+    #ifdef DEBUG
+    Serial.print("RX msg len: "); Serial.print(message_length); Serial.print(" .. MSG: ");
+    #endif
     
     nSEL_LOW;
 
         Write8bitcommand(0x7f);                 //komenda czytamy ...
-        
+        for (char i = 0; i < message_length; i++) {
+          //RF_Servo_message[i] = read_8bit_data();
+          //Serial.print(RF_Servo_message[i]);
+          Serial.print(read_8bit_data());
+        }
+        /*
         //====================================
         if (message_length == 16)                           //czyli info o serwach
           {
@@ -114,9 +123,9 @@ void SI4432_receive_data()
               }   
         
           }
-
-
+*/
     nSEL_HIGH;
+  }
 }
 
 /**
