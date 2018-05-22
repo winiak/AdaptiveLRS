@@ -18,6 +18,11 @@
 #define RF22B_PACKET_SENT_INTERRUPT           0b00000100
 
 unsigned char ItStatus1, ItStatus2;                 //rejestry SI4432 do odczytu 
+static unsigned char hopping_channel = 0;
+
+unsigned char getCurrentChannel() {
+  return hopping_channel;
+}
 
 boolean SI4432_checkRX() {
   //If it occurs, then it means a packet received or CRC error happened or sync word occured
@@ -317,8 +322,7 @@ void radio_init(void)
 
 void Hopping(void)
 {
-  static unsigned char hopping_channel = 0;
-
+  
   //LED_feadback_8_HIGH;
   
   hopping_channel++;

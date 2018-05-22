@@ -1,5 +1,4 @@
 
-
 void Send_Servo_message()
 {
   //servo_message musi mieć 16 bytów!!!  
@@ -13,6 +12,9 @@ void Send_Servo_message()
     SI4432_TX(16);           //nadaj 16 bytów z bufora
 }
 
+void Send_RX_RSSI_message() {
+  //TX_Buffer[0] = RX_RSSI;
+}
 
 void Send_Bridge_message()
 {
@@ -27,6 +29,7 @@ void Send_Bridge_message()
     SI4432_TX(18);           //nadaj 18 bytów z bufora
 
 }
+
 
 void servoTester() {
   static unsigned int swipeval = 2000;

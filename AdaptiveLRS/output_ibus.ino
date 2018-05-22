@@ -58,7 +58,7 @@ void send_frame() {
   frame_buffer[30] = chksum % 256;
   frame_buffer[31] = chksum / 256;
 
-  // Send to serial (soft serial does not works at 115200
+  // Send to serial (soft serial does not work at 115200) - HW UART MUST BE USED
   Serial.write(frame_buffer);
  
   
