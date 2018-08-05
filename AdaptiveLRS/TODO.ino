@@ -29,4 +29,6 @@
  * - generating fport frame, check with FC
  * - read sbus frame
  * - read fport frame
+ * - detect antennna presence - start from low power? what about power fail, re-connect during flight?
+ * - RSSI statistics per channel - store results in eeprom - for hopping use channels with best RSSI
 */
