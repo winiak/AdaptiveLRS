@@ -28,12 +28,15 @@
  */
 
 // Debug mode
-//#define DEBUG
+// Debug level: 0-none; 1-status only; 2-radio debug; 3-servo channels debug;
+
+#define DEBUG 3
 #define servo_tester_module
 
 // Transmitter or Receiver
 #define TX_module
 //#define RX_module
+//#define BAND_scan
 
 // Communication type
 #define PPM_module  // using ICP for TX or declared for TX
@@ -52,9 +55,10 @@
 #define channel         1
 #define power           3
 #define base_frequency  867000000
-const char RF_Header[4] = {'A', 'A', 'A', 'J'};
+const char RF_Header[4] = {'A', 'K', 'A', 'W'};
 const uint8_t hop_list[] = {5,7,12};
-uint8_t hopping_channel = 0;
+static unsigned char hopping_channel = 0;
+//uint8_t hopping_channel = 0;
 //{10,9,8}; //{1,142,3,140,7,138,11,136,67,111}; 
 
 // Servos & channels
@@ -83,6 +87,7 @@ unsigned int Servo_Failsafe[SERVO_CHANNELS] = {3000, 3000, 1800, 3000, 3000, 300
   #define SDO_pin           A0
   #define SDI_pin           A1
   #define SCLK_pin          A2
+  #define SDN_pin           A3
   #define IRQ_pin           2
   #define nSel_pin          4
   #define  nIRQ_HIGH    (PIND & 0x04)==0x04 //D2

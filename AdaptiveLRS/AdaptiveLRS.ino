@@ -36,9 +36,16 @@ void setup() {
   pinMode(SCLK_pin, OUTPUT);
   pinMode(IRQ_pin, INPUT);
   pinMode(nSel_pin, OUTPUT);
+  #ifdef SDN_pin
+    pinMode(SDN_pin, OUTPUT);
+    digitalWrite(SDN_pin, LOW);
+  #endif
 
   Serial.begin(115200);
-  Serial.println("Transciever starting...");
+  #if DEBUG > 0
+    configurationStatus();
+ #endif;
+  
   wdt_enable(WDTO_250MS);  
   radio_init();
 
@@ -48,7 +55,10 @@ void setup() {
     #ifdef PPM_module
       //
     #endif //PPM_module
-    Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
+    #if DEBUG == 3
+      Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
+    #endif
+    
   #endif //RX_module
   
   #ifdef TX_module
@@ -56,13 +66,13 @@ void setup() {
 
     #endif //PPM_module
   #endif;
-  //set_data_rate_low();
+  set_data_rate_low();
 }
 
 void loop() {
   static unsigned long transmit_time = 0;
   static unsigned long receive_time = 0;
-  static unsigned long 20ms_time = 0;
+  static unsigned long twenty_ms_time = 0;
   static unsigned long ibus_frame_time = 0;
   char i;
   wdt_reset();
@@ -85,8 +95,8 @@ void loop() {
     #endif //ibus_module
     
     #ifdef servo_tester_module
-      if (micros() > 20ms_time) {
-        20ms_time = micros() + 20000;
+      if (micros() > twenty_ms_time) {
+        twenty_ms_time = micros() + 20000;
         servoTester();
       }
     #endif  //servo_tester_module
@@ -103,8 +113,10 @@ void loop() {
       // increase counter of lost frames
       lost_frames++;
     }
-    // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
-    Serial.print(RX_RSSI); Serial.print("\t"); Serial.print(lost_frames); Serial.print("\t");  Serial.print(getCurrentChannel()); Serial.print("\t"); Serial.println(receive_time); 
+    #if DEBUG == 3
+      // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
+      Serial.print(RX_RSSI); Serial.print("\t"); Serial.print(lost_frames); Serial.print("\t");  Serial.print(getCurrentChannel()); Serial.print("\t"); Serial.println(receive_time); 
+    #endif
   #endif  //RX_module
 
   /**
@@ -142,8 +154,10 @@ void loop() {
     Send_Servo_message();
     
     timer_stop = micros();
-    #ifdef DEBUG
-      Serial.print(timer_stop - timer_start); Serial.println("us");
+    #if DEBUG == 3
+      // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
+      Serial.print(TX_RSSI); Serial.print("\t"); Serial.print(getCurrentChannel()); Serial.print("\t"); Serial.println(timer_stop - timer_start); 
+      //Serial.print(timer_stop - timer_start); Serial.println("us");
     #endif
  }
  

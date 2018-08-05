@@ -31,4 +31,6 @@
  * - read fport frame
  * - detect antennna presence - start from low power? what about power fail, re-connect during flight?
  * - RSSI statistics per channel - store results in eeprom - for hopping use channels with best RSSI
+ * - Band scanner
+ * - Configuration status on startup
 */

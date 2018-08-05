@@ -18,7 +18,7 @@
 #define RF22B_PACKET_SENT_INTERRUPT           0b00000100
 
 unsigned char ItStatus1, ItStatus2;                 //rejestry SI4432 do odczytu 
-static unsigned char hopping_channel = 0;
+//static unsigned char hopping_channel = 0;
 
 unsigned char getCurrentChannel() {
   return hopping_channel;
@@ -37,7 +37,7 @@ boolean SI4432_checkRX() {
     {
       RX_RSSI = SI4432_spi_read(0x26);
       #ifdef DEBUG
-      Serial.println(RX_RSSI);         
+      Serial.println("RX RSSI"); Serial.println(RX_RSSI);         
       #endif
     }
   }
@@ -82,7 +82,7 @@ void SI4432_receive_data()
   //??? check whether the received payload is not longer than the allocated buffer in the MCU
 
   if (message_length > 0) {
-    #ifdef DEBUG
+    #ifdef DEBUG 
     Serial.print("RX msg len: "); Serial.print(message_length); Serial.print(" .. MSG: ");
     #endif
     
@@ -189,7 +189,7 @@ void SI4432_TX(unsigned char message_length)
 void set_data_rate_high()
 {
    //57600
-    Serial.print("Data rate high\n");
+    Serial.print("Data rate high - 57600\n");
     SI4432_spi_write(0x1c, 0x05);     //IF Filter Bandwidth
     SI4432_spi_write(0x1d, 0x40);     //AFC Loop Gearshift Override, 
     SI4432_spi_write(0x1e, 0x0A);     //Si4432_AFC_TIMING_CONTROL
@@ -224,7 +224,7 @@ void set_data_rate_low()
   { 57600, 0x05, 0x40, 0x0a, 0x45, 0x01, 0xd7, 0xdc, 0x03, 0xb8, 0x1e, 0x0e, 0xbf, 0x00, 0x23, 0x2e },
   { 125000, 0x8a, 0x40, 0x0a, 0x60, 0x01, 0x55, 0x55, 0x02, 0xad, 0x1e, 0x20, 0x00, 0x00, 0x23, 0xc8 },
  */
-    Serial.print("Data rate low\n");
+    Serial.print("Data rate low - 19200\n");
  // { 19200, 0x06, 0x40, 0x0a, 0xd0, 0x00, 0x9d, 0x49, 0x00, 0x7b, 0x28, 0x9d, 0x49, 0x2c, 0x23, 0x30 },
     SI4432_spi_write(0x1c, 0x06);     //IF Filter Bandwidth
     SI4432_spi_write(0x1d, 0x40);     //AFC Loop Gearshift Override, 
@@ -311,9 +311,13 @@ void radio_init(void)
     SI4432_spi_write(0x1F, 0x03); //write 0x03 to the Clock Recovery Gearshift Override register
     SI4432_spi_write(0x6d, power); 
 
-    #ifdef DEBUG
-    Serial.print("RF_Version_code: "); Serial.println(SI4432_spi_read(0x01),BIN);
-    #endif
+    //#ifdef DEBUG
+    byte rf_ver;
+    rf_ver = SI4432_spi_read(0x01);
+    Serial.print("RF_Version_code: "); Serial.print(rf_ver,BIN); Serial.println((rf_ver == 6 ? " OK" : " ICORRECT !"));
+    if (rf_ver != 6) while(1) {};
+    
+    //#endif
   
 }
 
