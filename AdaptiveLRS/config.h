@@ -27,13 +27,14 @@
  * 0 == 1.3mW
  */
 
-// Debug mode
-//#define DEBUG
+// Debug mode / Level=0 -> none, Level=1->only states, Level=2->RSSI, Level=3->Channel Data
+#define DEBUG 0
 #define servo_tester_module
 
 // Transmitter or Receiver
 #define TX_module
 //#define RX_module
+//#define Band_scanner
 
 // Communication type
 #define PPM_module  // using ICP for TX or declared for TX
@@ -54,7 +55,6 @@
 #define base_frequency  867000000
 const char RF_Header[4] = {'A', 'A', 'A', 'J'};
 const uint8_t hop_list[] = {5,7,12};
-uint8_t hopping_channel = 0;
 //{10,9,8}; //{1,142,3,140,7,138,11,136,67,111}; 
 
 // Servos & channels

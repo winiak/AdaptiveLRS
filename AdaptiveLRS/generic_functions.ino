@@ -46,7 +46,7 @@ void servoTester() {
     Servos[i] = (i != 2 ? swipeval : Servos[i]);
 }
 
-#ifdef DEBUG
+#ifdef DEBUG > 0
 void PrintHex8(uint8_t *data, uint8_t length) // prints 8-bit data in hex with leading zeroes
 {
    Serial.print("0x");

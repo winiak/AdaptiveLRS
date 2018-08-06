@@ -188,8 +188,10 @@ void SI4432_TX(unsigned char message_length)
 
 void set_data_rate_high()
 {
-   //57600
+   // { 57600, 0x05, 0x40, 0x0a, 0x45, 0x01, 0xd7, 0xdc, 0x03, 0xb8, 0x1e, 0x0e, 0xbf, 0x00, 0x23, 0x2e },
+    #ifdef DEBUG > 0
     Serial.print("Data rate high\n");
+    #endif
     SI4432_spi_write(0x1c, 0x05);     //IF Filter Bandwidth
     SI4432_spi_write(0x1d, 0x40);     //AFC Loop Gearshift Override, 
     SI4432_spi_write(0x1e, 0x0A);     //Si4432_AFC_TIMING_CONTROL
@@ -209,8 +211,6 @@ void set_data_rate_high()
 
     //dla 45k  dev..... RX 0x35 (33125)   TX  0x48 (45000)
     //dla 28,8dev     RX  0x28 (25000)   TX 0x2E (28750)   
-    #ifdef DEBUG
-    #endif
 }
 
 void set_data_rate_low()
@@ -224,7 +224,9 @@ void set_data_rate_low()
   { 57600, 0x05, 0x40, 0x0a, 0x45, 0x01, 0xd7, 0xdc, 0x03, 0xb8, 0x1e, 0x0e, 0xbf, 0x00, 0x23, 0x2e },
   { 125000, 0x8a, 0x40, 0x0a, 0x60, 0x01, 0x55, 0x55, 0x02, 0xad, 0x1e, 0x20, 0x00, 0x00, 0x23, 0xc8 },
  */
+    #ifdef DEBUG > 0
     Serial.print("Data rate low\n");
+    #endif
  // { 19200, 0x06, 0x40, 0x0a, 0xd0, 0x00, 0x9d, 0x49, 0x00, 0x7b, 0x28, 0x9d, 0x49, 0x2c, 0x23, 0x30 },
     SI4432_spi_write(0x1c, 0x06);     //IF Filter Bandwidth
     SI4432_spi_write(0x1d, 0x40);     //AFC Loop Gearshift Override, 
@@ -240,7 +242,7 @@ void set_data_rate_low()
     SI4432_spi_write(0x6f, 0x49);     //TX Data Rate 0
     SI4432_spi_write(0x70, 0x2c);     //Modulation Mode Control 1, 
     SI4432_spi_write(0x71, 0x23);     //Modulation Mode Control 2, FIFO Mode, GFSK
-    SI4432_spi_write(0x72, 0x2E);     //frequency deviation setting to 28.8khz    
+    SI4432_spi_write(0x72, 0x30);     //frequency deviation setting to 28.8khz    
 }
 
 /**
@@ -311,7 +313,7 @@ void radio_init(void)
     SI4432_spi_write(0x1F, 0x03); //write 0x03 to the Clock Recovery Gearshift Override register
     SI4432_spi_write(0x6d, power); 
 
-    #ifdef DEBUG
+    #ifdef DEBUG > 0
     Serial.print("RF_Version_code: "); Serial.println(SI4432_spi_read(0x01),BIN);
     #endif
   

@@ -29,4 +29,6 @@
  * - generating fport frame, check with FC
  * - read sbus frame
  * - read fport frame
+ * - Band scanner - return Frequency & RSSI
+ * - Configuration report at startup: Type (TX/RX), Communication type, Base Freq, Power, Channel First, RF Header, Hopping channels, 
 */
