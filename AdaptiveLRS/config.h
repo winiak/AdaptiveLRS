@@ -13,6 +13,7 @@
  * SDO    <-> A0
  * SDI    <-> A1
  * SCK    <-> A2    RFM22 <-> RFM22
+ * SDN    <-> A3    ** optional
  * nSEL   <-> D4    GPIO0 <-> TX_ANT
  * nIRQ   <-> D2    GPIO1 <-> RX_ANT 
  * 
@@ -67,7 +68,7 @@ volatile unsigned int Servo_Buffer[SERVO_CHANNELS] = {3000, 3000, 2000, 3000, 30
 unsigned int Servos[SERVO_CHANNELS] = {3000, 3000, 2000, 3000, 3000, 3000, 3000, 3000};  
 unsigned int Servo_Failsafe[SERVO_CHANNELS] = {3000, 3000, 1800, 3000, 3000, 3000, 3000, 3000};
 
-  #define SERVO_SHIFT 0   //(-16)   // PPM = -16  |  others = 0
+  #define SERVO_SHIFT 0   //(-16)   // PPM = -16  |  other receivers  = 0
 
 // PPM 
   #define PPM_OUT 8   

@@ -6,8 +6,8 @@
 #if (SPECTRUM_ANALYZER == 1)
 Serial.begin(115200);
 
-unsigned char read_serial =0;
-char serial_buf =0;
+unsigned char read_serial = 0;
+char serial_buf = 0;
 long temp_buf[4] = {0,0,0,0};
 unsigned char buf_index =0;
 
