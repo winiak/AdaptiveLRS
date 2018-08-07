@@ -42,9 +42,15 @@ void setup() {
   #endif
 
   Serial.begin(115200);
+<<<<<<< HEAD
   #if DEBUG > 0
     configurationStatus();
  #endif;
+=======
+  #ifdef DEBUG >= 1
+  Serial.println("Transciever starting...");
+  #endif
+>>>>>>> refs/remotes/origin/rozjazd-z-pracy
   
   wdt_enable(WDTO_250MS);  
   radio_init();
@@ -53,9 +59,14 @@ void setup() {
   
   #ifdef RX_module
     #ifdef PPM_module
-      //
+      ;
     #endif //PPM_module
+<<<<<<< HEAD
     #if DEBUG == 3
+=======
+    
+    #ifdef DEBUG >= 2
+>>>>>>> refs/remotes/origin/rozjazd-z-pracy
       Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
     #endif
     
@@ -113,9 +124,15 @@ void loop() {
       // increase counter of lost frames
       lost_frames++;
     }
+<<<<<<< HEAD
     #if DEBUG == 3
       // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
       Serial.print(RX_RSSI); Serial.print("\t"); Serial.print(lost_frames); Serial.print("\t");  Serial.print(getCurrentChannel()); Serial.print("\t"); Serial.println(receive_time); 
+=======
+    // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
+    #ifdef DEBUG >= 1
+    Serial.print(RX_RSSI); Serial.print("\t"); Serial.print(lost_frames); Serial.print("\t");  Serial.print(getCurrentChannel()); Serial.print("\t"); Serial.println(receive_time); 
+>>>>>>> refs/remotes/origin/rozjazd-z-pracy
     #endif
   #endif  //RX_module
 
