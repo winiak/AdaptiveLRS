@@ -28,25 +28,16 @@
  * 0 == 1.3mW
  */
 
-<<<<<<< HEAD
 // Debug mode
-// Debug level: 0-none; 1-status only; 2-radio debug; 3-servo channels debug;
-
 #define DEBUG 3
-=======
 // Debug mode / Level=0 -> none, Level=1->only states, Level=2->RSSI, Level=3->Channel Data
-#define DEBUG 0
->>>>>>> refs/remotes/origin/rozjazd-z-pracy
+
 #define servo_tester_module
 
 // Transmitter or Receiver
 #define TX_module
 //#define RX_module
-<<<<<<< HEAD
 //#define BAND_scan
-=======
-//#define Band_scanner
->>>>>>> refs/remotes/origin/rozjazd-z-pracy
 
 // Communication type
 #define PPM_module  // using ICP for TX or declared for TX
@@ -67,12 +58,10 @@
 #define base_frequency  867000000
 const char RF_Header[4] = {'A', 'K', 'A', 'W'};
 const uint8_t hop_list[] = {5,7,12};
-<<<<<<< HEAD
+//{10,9,8}; //{1,142,3,140,7,138,11,136,67,111}; 
+
 static unsigned char hopping_channel = 0;
 //uint8_t hopping_channel = 0;
-=======
->>>>>>> refs/remotes/origin/rozjazd-z-pracy
-//{10,9,8}; //{1,142,3,140,7,138,11,136,67,111}; 
 
 // Servos & channels
 #define SERVO_CHANNELS 8

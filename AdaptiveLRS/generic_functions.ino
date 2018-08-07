@@ -70,15 +70,17 @@ void configurationStatus()
 
 void Send_Servo_message()
 {
-  //servo_message musi mieć 16 bytów!!!  
-        
-    for (byte i = 0; i < 8; i++)
+  //servo_message musi mieć 16 bytów!!! 
+    TX_Buffer[0] =  'M';
+    TX_Buffer[1] = 103;   // MSP SERVO MESSAGE
+    
+    for (byte i = 1; i < 9; i++)
       {
         TX_Buffer[(i * 2)] = Servos[i] / 256;
         TX_Buffer[(i * 2) + 1] = Servos[i] % 256;
       }
             
-    SI4432_TX(16);           //nadaj 16 bytów z bufora
+    SI4432_TX(18);           //nadaj 18 bytów z bufora
 }
 
 void Send_RX_RSSI_message() {
