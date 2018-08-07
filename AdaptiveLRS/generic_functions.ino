@@ -68,6 +68,15 @@ void configurationStatus()
   // Data bus frame period
 }
 
+void Send_message(char type, uint8_t message_ID, char msg_buffer[32], uint8_t msg_lenght)
+{
+  TX_Buffer[0] = type;
+  TX_Buffer[1] = message_ID;
+  for (byte i = 2; i < msg_lenght + 2; i++)
+    TX_Buffer[i] = msg_buffer[32];
+  SI4432_TX(msg_lenght + 2);
+}
+
 void Send_Servo_message()
 {
   //servo_message musi mieć 16 bytów!!! 
