@@ -29,13 +29,13 @@
  * - generating fport frame, check with FC
  * - read sbus frame
  * - read fport frame
-<<<<<<< HEAD
+
  * - detect antennna presence - start from low power? what about power fail, re-connect during flight?
  * - RSSI statistics per channel - store results in eeprom - for hopping use channels with best RSSI
  * - Band scanner
  * - Configuration status on startup
-=======
+
  * - Band scanner - return Frequency & RSSI
  * - Configuration report at startup: Type (TX/RX), Communication type, Base Freq, Power, Channel First, RF Header, Hopping channels, 
->>>>>>> refs/remotes/origin/rozjazd-z-pracy
+
 */

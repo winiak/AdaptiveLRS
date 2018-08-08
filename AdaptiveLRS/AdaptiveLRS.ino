@@ -31,16 +31,19 @@
   // temporary variables
 
 void setup() {
+  delay(20);
+  #ifdef SDN_pin
+    pinMode(SDN_pin, OUTPUT);
+    digitalWrite(SDN_pin, LOW);
+    delay(50);
+  #endif
   pinMode(SDO_pin, INPUT);
   pinMode(SDI_pin, OUTPUT);
   pinMode(SCLK_pin, OUTPUT);
   pinMode(IRQ_pin, INPUT);
   pinMode(nSel_pin, OUTPUT);
-  #ifdef SDN_pin
-    pinMode(SDN_pin, OUTPUT);
-    digitalWrite(SDN_pin, LOW);
-  #endif
-
+  digitalWrite(nSel_pin, LOW);
+  delay(100);
   Serial.begin(115200);
 
   #if DEBUG > 0
@@ -71,7 +74,7 @@ void setup() {
 
     #endif //PPM_module
   #endif;
-  set_data_rate_high();
+  set_data_rate_low();
 }
 
 void loop() {
@@ -153,19 +156,21 @@ void loop() {
     #endif //ppm_module
 
 
-  // transmit every 10..20..40ms  -> let's try 7 (iBus only) / 20 / 40
+  // transmit every 10..20..40ms -> let's try 7 (iBus only) / 20 / 40
   if (micros() > transmit_time) {
     transmit_time = micros() + TX_period;
-    timer_start = micros();
-
+    #if DEBUG == 3 
+      timer_start = micros(); 
+    #endif
+    //to_ready_mode();
     // Hopping
     Hopping();
     
     // Prepare and sent TX control packet
     Send_Servo_message();
     
-    timer_stop = micros();
     #if DEBUG == 3
+      timer_stop = micros();
       // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
       Serial.print(TX_RSSI); Serial.print("\t"); Serial.print(getCurrentChannel()); 
           Serial.print("\t"); Serial.println(timer_stop - timer_start); 
@@ -173,9 +178,9 @@ void loop() {
     #endif
  }
  
-   // Wait for RX to respond
+  // Wait for RX to respond
   SI4432_checkRX();
-  //Serial.println(RF_Servo_message);
+  // Serial.println(RF_Servo_message);
   
   // Get RSSI
   // Serial.println(RX_RSSI); --> done in SI4432_checkRX() function.
@@ -193,7 +198,7 @@ void loop() {
         LED_feadback_8_LOW;
         Telemetry_Bridge_Write();
         Hopping();
-   * /
    */
+
 }
 

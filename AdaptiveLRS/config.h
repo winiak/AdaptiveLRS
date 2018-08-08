@@ -5,7 +5,7 @@
  * 3) Select communication parameters
  * 4) Select PIN mapping
  * 
- * HW configuration " 1"Type 3 RX
+ * HW configuration " 1" Type 3 RX
  * SI4432 <-> Arduino     RFM22 <-> RFM22
  * GND    <-> GND *       GPIO2 
  * SDO    <-> A0          GPIO1 
@@ -34,8 +34,8 @@
 #define servo_tester_module
 
 // Transmitter or Receiver
-//#define TX_module
-#define RX_module
+#define TX_module
+//#define RX_module
 //#define BAND_scan
 
 // Communication type
