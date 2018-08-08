@@ -45,10 +45,10 @@ void setup() {
 
   #if DEBUG > 0
     configurationStatus();
- #endif;
+  #endif;
 
   #ifdef DEBUG >= 1
-  Serial.println("Transciever starting...");
+    Serial.println("Transciever starting...");
   #endif
   
   wdt_enable(WDTO_250MS);  
@@ -61,7 +61,7 @@ void setup() {
       ;
     #endif //PPM_module
     #if DEBUG == 3
-      Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
+      Serial.print("RSSI\tLost Fr\tHopping Ch\treceive_time\n"); 
     #endif
     
   #endif //RX_module
@@ -71,7 +71,7 @@ void setup() {
 
     #endif //PPM_module
   #endif;
-  set_data_rate_low();
+  set_data_rate_high();
 }
 
 void loop() {
@@ -99,12 +99,18 @@ void loop() {
     }
     #endif //ibus_module
     
-    #ifdef servo_tester_module
       if (micros() > twenty_ms_time) {
         twenty_ms_time = micros() + 20000;
-        servoTester();
+        #ifdef servo_tester_module
+          servoTester();
+        #endif  //servo_tester_module
+
+        #if DEBUG == 3
+          // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
+          Serial.print(RX_RSSI); Serial.print("\t"); Serial.print(lost_frames); 
+              Serial.print("\t");  Serial.print(getCurrentChannel()); Serial.print("\t"); Serial.println(receive_time); 
+        #endif      
       }
-    #endif  //servo_tester_module
 
     if (SI4432_checkRX()) {           // DATA RECEIVED
       lost_frames = 0;
@@ -119,11 +125,6 @@ void loop() {
       lost_frames++;
     }
 
-    #if DEBUG == 3
-      // Serial.print("RSSI\tLost Frames\tHopping Ch\treceive_time"); 
-      Serial.print(RX_RSSI); Serial.print("\t"); Serial.print(lost_frames); 
-          Serial.print("\t");  Serial.print(getCurrentChannel()); Serial.print("\t"); Serial.println(receive_time); 
-    #endif
   #endif  //RX_module
 
   /**
@@ -137,6 +138,9 @@ void loop() {
     if (iBus_failed())
       for (i = 0; i < SERVO_CHANNELS; i++)
         Servos[i] = Servo_Failsafe[i];
+    else
+      for (i = 0; i < SERVO_CHANNELS; i++)
+        Servos[i] = Servo_Buffer[i];
     #endif //ibus_module
     
     #ifdef PPM_module

@@ -1,7 +1,4 @@
 
-
-
-
 /**
  * 1) Select type TX / RX
  * 2) Select HW configuration
@@ -9,13 +6,15 @@
  * 4) Select PIN mapping
  * 
  * HW configuration " 1"Type 3 RX
- * SI4432 <-> Arduino
- * SDO    <-> A0
- * SDI    <-> A1
- * SCK    <-> A2    RFM22 <-> RFM22
- * SDN    <-> A3    ** optional
- * nSEL   <-> D4    GPIO0 <-> TX_ANT
- * nIRQ   <-> D2    GPIO1 <-> RX_ANT 
+ * SI4432 <-> Arduino     RFM22 <-> RFM22
+ * GND    <-> GND *       GPIO2 
+ * SDO    <-> A0          GPIO1 
+ * SDI    <-> A1          GPIO0
+ * SCK    <-> A2          VCC  3,3V
+ * nSEL   <-> D4          TX_ANT <-> GPIO0
+ * nIRQ   <-> D2          RX_ANT <-> GPIO1 
+ * SDN    <-> A3          GND
+ * GND    <-> GND         ANT
  * 
  * Transmitting power
  * 7 == 100mW (or 1000mW with M3)
@@ -35,8 +34,8 @@
 #define servo_tester_module
 
 // Transmitter or Receiver
-#define TX_module
-//#define RX_module
+//#define TX_module
+#define RX_module
 //#define BAND_scan
 
 // Communication type
