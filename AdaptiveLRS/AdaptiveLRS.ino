@@ -116,6 +116,7 @@ void loop() {
       }
 
     if (SI4432_checkRX()) {           // DATA RECEIVED
+      Serial.println(F("Pocket received"));
       lost_frames = 0;
       receive_time  = micros();
       Hopping();
