@@ -62,7 +62,7 @@ boolean SI4432_checkRX() {
         SI4432_spi_write(0x07, 0x01);                 //write 0x01 to the Operating Function Control 1 register
         
         SI4432_receive_data();
-
+        Serial.println(F("Pocket received"));
         SI4432_to_RX_mode();
         return true;  
       }
@@ -144,7 +144,11 @@ void SI4432_TX(unsigned char message_length)
     #endif
     
     //disable the receiver chain (but keep the XTAL running to have shorter TX on time!)
-    SI4432_spi_write(0x07, 0x01);
+    //SI4432_spi_write(0x07, 0x01);
+    //delay(10);
+    SI4432_spi_write(0x07, RF22B_PWRSTATE_TX);    // to tx mode
+    
+    //delayMicroseconds(100);
 
     //The Tx deviation register has to set according to the deviation before every transmission 
     SI4432_spi_write(0x72, 0x2E);
@@ -174,12 +178,15 @@ void SI4432_TX(unsigned char message_length)
     //The MCU just needs to wait for the 'ipksent' interrupt.
     while (nIRQ_HIGH);
 
+    //long delay_time;
+    //delay_time = micros();
+    //while (micros() - delay_time < 100) { } 
 
     //read interrupt status registers to release the interrupt flags
     ItStatus1 = SI4432_spi_read(0x03); //read the Interrupt Status1 register
     ItStatus2 = SI4432_spi_read(0x04); //read the Interrupt Status2 register
 
-    // Serial.print("\t"); Serial.println(ItStatus1,BIN);
+    //Serial.print("\t"); Serial.println(ItStatus1,BIN);
 
     /*
      *     long delay_time;
@@ -271,6 +278,7 @@ void radio_init(void)
     
     SI4432_spi_write(0x06, 0x00);
     SI4432_spi_write(0x07, RF22B_PWRSTATE_READY);
+    delay(10);
 
     SI4432_spi_write(0x09, 0x7f);                   //30 MHz Crystal Oscillator Load Capacitance
     SI4432_spi_write(0x73, 0x00);                   //Frequency Offset 1
@@ -291,7 +299,7 @@ void radio_init(void)
     set_data_rate_low();  // set_data_rate_high();
 
     SI4432_spi_write(0x30, 0x8c);                   // enable packet handler, msb first, enable crc,
-    SI4432_spi_write(0x32, 0x0f);                   // no broadcast, check header bytes 3,2,1,0             
+    SI4432_spi_write(0x32, 0x00);     //0x0f              // no broadcast, check header bytes 3,2,1,0             
     SI4432_spi_write(0x33, 0x42);                   // 4 byte header, 2 byte synch, variable pkt size
     SI4432_spi_write(0x34, 0x0A);                   // 40 bit preamble,
     SI4432_spi_write(0x35, 0x2A);                   //20 bits Preamble Detection Threshold          // Preamble Detection Control 1
@@ -309,7 +317,7 @@ void radio_init(void)
     SI4432_spi_write(0x41, RF_Header[2]);
     SI4432_spi_write(0x42, RF_Header[3]);         
 
-
+/*
     //set the non-default Si4432 registers
     //set the VCO and PLL
     SI4432_spi_write(0x5A, 0x7F); //write 0x7F to the VCO Current Trimming register
@@ -320,6 +328,7 @@ void radio_init(void)
     //set ADC reference voltage to 0.9V
     SI4432_spi_write(0x68, 0x04); //write 0x04 to the Deltasigma ADC Tuning 2 register
     SI4432_spi_write(0x1F, 0x03); //write 0x03 to the Clock Recovery Gearshift Override register
+*/    
     SI4432_spi_write(0x6d, power); 
 
    #if DEBUG > 0
@@ -357,7 +366,7 @@ void SI4432_to_RX_mode(void)
     SI4432_spi_write(0x72, 0x28);
     
     /*enable receiver chain*/
-    SI4432_spi_write(0x07, 0b00000101);       //write 0x05 to the Operating Function Control 1 register
+    SI4432_spi_write(0x07, 0b00000101);       //write 0x05 (0b00000101) to the Operating Function Control 1 register
     
     //Enable 3 interrupts:
     // a) one which shows that a valid packet received: 'ipkval'
